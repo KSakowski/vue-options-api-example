@@ -1,5 +1,3 @@
-# usa
-
 ## Project setup
 ```
 yarn install

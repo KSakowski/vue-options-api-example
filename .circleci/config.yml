@@ -1,0 +1,167 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: cimg/node:14.17.1
+
+    working_directory: ~/project
+    resource_class: small
+
+    steps:
+      - checkout
+
+      - when:
+          condition:
+            equal: [develop, << pipeline.git.branch >> ]
+          steps:
+            # Download and cache dependencies
+            - restore_cache:
+                keys:
+                  # "composer.lock" can be used if it is committed to the repo
+                  - v1-yarn-dev-{{ checksum "yarn.lock" }}
+                  # fallback to using the latest cache if no exact match is found
+                  - v1-yarn-dev-
+
+            - run:
+                name: "Install Dependencies"
+                command: yarn install
+
+            - save_cache:
+                key: v1-yarn-dev-{{ checksum "yarn.lock" }}
+                paths:
+                  - ./node_modules
+            
+            - run:
+                name: "Generate .env file"
+                command: |
+                  echo -e "VUE_APP_API_URL=$TEST_APP_API_URL" > .env
+
+            - run:
+                name: "Build for develop"
+#                command: yarn build-dev
+                command: yarn build
+
+      - when:
+          condition:
+            equal: [master, << pipeline.git.branch >> ]
+          steps:
+            # Download and cache dependencies
+            - restore_cache:
+                keys:
+                  # "composer.lock" can be used if it is committed to the repo
+                  - v1-yarn-prod-{{ checksum "yarn.lock" }}
+                  # fallback to using the latest cache if no exact match is found
+                  - v1-yarn-prod-
+
+            - run:
+                name: "Install Dependencies"
+                command: yarn install
+
+            - save_cache:
+                key: v1-yarn-prod-{{ checksum "yarn.lock" }}
+                paths:
+                  - ./node_modules
+
+            - run:
+                name: "Generate .env file"
+                command: |
+                  echo -e "VUE_APP_API_URL=$PROD_APP_API_URL" > .env
+
+            - run:
+                name: "Build for production"
+                command: yarn build
+
+      - run:
+          name: "Copy .htaccess"
+          command: cp ./.circleci/.htaccess ./dist/.htaccess
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  deploy_test:
+    docker:
+        - image: cimg/base:2021.04
+
+    working_directory: ~/project
+    resource_class: small
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: "Install rsync"
+          command: |
+            sudo apt update
+            sudo apt install rsync
+
+      - add_ssh_keys
+
+      - run:
+          name: "Known hosts"
+          command: ssh-keyscan -H $SSH_HOSTNAME >> ~/.ssh/known_hosts
+
+      - run:
+          name: "Deploy to test server"
+          command: rsync -arz --delete dist/ $SSH_USER@$SSH_HOSTNAME:$SSH_TEST_DIRECTORY/test
+
+  deploy_production:
+    docker:
+        - image: cimg/base:2021.04
+
+    working_directory: ~/project
+    resource_class: small
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: "Install rsync"
+          command: |
+            sudo apt update
+            sudo apt install rsync
+
+      - add_ssh_keys
+
+      - run:
+          name: "Known hosts"
+          command: ssh-keyscan -H $SSH_HOSTNAME >> ~/.ssh/known_hosts
+
+      - run:
+          name: "Deploy to production server"
+          command: rsync -arz --delete dist/ $SSH_USER@$SSH_HOSTNAME:$SSH_PROD_DIRECTORY/production
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - hold:
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - build
+      - deploy_test:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+      - deploy_production:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - hold

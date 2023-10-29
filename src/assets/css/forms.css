@@ -1,0 +1,19 @@
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active
+{
+    -webkit-box-shadow: 0 0 0 30px white inset;
+}
+
+select{
+    padding: 5px;
+}
+
+.form-control:disabled {
+    /*background: inherit;*/
+    cursor: not-allowed;
+}
+/*.form-control:disabled, .form-control:disabled + label {*/
+/*    color: gray;*/
+/*}*/

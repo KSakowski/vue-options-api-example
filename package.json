@@ -1,0 +1,62 @@
+{
+  "name": "gm-dasbhoard",
+  "engines": {
+    "node": ">=14.17"
+  },
+  "version": "0.1.2",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "build-dev": "vue-cli-service build --mode development",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^1.0.5",
+    "@tailwindcss/postcss7-compat": "^2.2.14",
+    "@tailwindcss/typography": "^0.4.1",
+    "@vuepic/vue-datepicker": "3.6.1",
+    "autoprefixer": "9",
+    "axios": "^0.21.4",
+    "core-js": "^3.6.5",
+    "dayjs": "^1.10.7",
+    "file-saver": "^2.0.5",
+    "js-cookie": "^3.0.1",
+    "jszip": "^3.9.1",
+    "postcss": "7",
+    "register-service-worker": "^1.7.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "vue": "^3.2.45",
+    "vue-class-component": "^8.0.0-0",
+    "vue-easy-lightbox": "^1.2.4",
+    "vue-i18n": "^9.1.7",
+    "vue-router": "^4.0.0-0",
+    "vue-toastification": "^2.0.0-rc.1",
+    "vue-window-size": "^1.1.2",
+    "vuex": "^4.0.0-0",
+    "vuex-persistedstate": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/file-saver": "^2.0.4",
+    "@types/js-cookie": "^2.2.7",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-pwa": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/eslint-config-airbnb": "^5.0.2",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-vue": "^7.0.0",
+    "openapi-typescript": "^4.0.2",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "typescript": "~4.1.5"
+  }
+}

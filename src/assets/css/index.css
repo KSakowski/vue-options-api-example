@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "layout.css";
+@import "animations.css";
+@import "fonts.css";
+@import "buttons.css";
+@import "forms.css";
+@import "scroll.css";
+@import "components/tabs.css";
